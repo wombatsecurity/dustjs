@@ -24,17 +24,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    execute: {
-      testRhino: {
-        src: 'node_modules/.bin/rhino*',
-        options: {
-          args: ['-f', 'test/rhino.spec.js']
-        }
-      },
-      buildParser: {
-        src: 'src/build.js'
-      }
-    },
     concat: {
       options: {
         banner: '<%= banner %>',
@@ -110,31 +99,9 @@ module.exports = function(grunt) {
        }
      }
     },
-    'saucelabs-jasmine': {
-      all: {
-        options: {
-          urls: ["http://localhost:3000/"],
-          build: process.env.TRAVIS_JOB_ID,
-          throttled: 3,
-          testname: 'core',
-          browsers: [
-            {browserName: 'chrome'},
-            {browserName: 'firefox', platform: 'Windows 10'},
-            {browserName: 'safari', version: 7, platform: 'OS X 10.9'},
-            {browserName: 'safari', version: 6, platform: 'OS X 10.8'},
-            {browserName: 'internet explorer', version: 11, platform: 'Windows 10'},
-            {browserName: 'internet explorer', version: 10, platform: 'Windows 8'},
-            {browserName: 'internet explorer', version: 9, platform: 'Windows 7'},
-            {browserName: 'internet explorer', version: 8, platform: 'Windows 7'}
-          ],
-          sauceConfig: {
-            'video-upload-on-pass': false
-          }
-        }
-      }
-    },
     jasmine: {
       options: {
+        customBootFile: 'test/boot.js',
         outfile: 'index.html',
         display: 'short',
         specs: ['test/templates/all.js', 'test/helpers/template.helper.js', 'test/templates.spec.js'],
@@ -237,18 +204,6 @@ module.exports = function(grunt) {
                     '  * npm publish'].join('\n')
         }
       }
-    },
-    githubChanges: {
-      dist: {
-        options: {
-          owner: "linkedin",
-          repository: "dustjs",
-          tagName: "v<%= pkg.version %>",
-          onlyPulls: true,
-          useCommitBody: true,
-          auth: true
-        }
-      }
     }
   });
 
@@ -275,8 +230,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-peg');
   grunt.loadNpmTasks('grunt-jasmine-nodejs');
-  grunt.loadNpmTasks('grunt-github-changes');
-  grunt.loadNpmTasks('grunt-saucelabs');
 
   //--------------------------------------------------
   //------------Grunt task aliases -------------------
@@ -286,16 +239,9 @@ module.exports = function(grunt) {
 
   //test tasks
   grunt.registerTask('testNode',       ['jasmine_nodejs:templates', 'jasmine_nodejs:core', 'jasmine_nodejs:cjs']);
-  grunt.registerTask('testRhino',      ['build', 'execute:testRhino']);
   grunt.registerTask('testPhantom',    ['build', 'jasmine:testProd']);
   grunt.registerTask('testCli',        ['jasmine_nodejs:dustc']);
-  grunt.registerTask('test',           ['build', 'jasmine:testProd', 'testCli', 'testNode', 'execute:testRhino', 'jasmine:coverage']);
-
-  //sauce labs integration (browser testing)
-  grunt.registerTask('sauce',          process.env.SAUCE_ACCESS_KEY ? ['jasmine:testProd:build', 'connect:testServer', 'saucelabs-jasmine'] : []);
-
-  //decide whether to run all tests or just the Node tests for Travis CI
-  grunt.registerTask('travis',         (process.env.TEST === 'all') ? ['test', 'sauce'] : ['testNode', 'testCli']);
+  grunt.registerTask('test',           ['build', 'jasmine:testDev', 'testCli', 'testNode', 'jasmine:testProd']);
 
   //task for debugging in browser
   grunt.registerTask('dev',            ['build', 'jasmine:testDev:build', 'connect:testServer', 'watch:lib']);
@@ -306,11 +252,11 @@ module.exports = function(grunt) {
   //coverage report
   grunt.registerTask('coverage',       ['build', 'jasmine:coverage', 'log:coverage']);
 
-  //release tasks
-  grunt.registerTask('copyForRelease', ['clean:dist', 'copy', 'log:copyForRelease']);
-  grunt.registerTask('buildRelease',   ['test', 'githubChanges', 'copyForRelease']);
-  grunt.registerTask('releasePatch',   ['bump-only:patch', 'buildRelease', 'bump-commit', 'log:release']);
-  grunt.registerTask('releaseMinor',   ['bump-only:minor', 'buildRelease', 'bump-commit', 'log:release']);
+  //no need for release tasks - we're not going to re-release
+  //grunt.registerTask('copyForRelease', ['clean:dist', 'copy', 'log:copyForRelease']);
+  //grunt.registerTask('buildRelease',   ['test', 'githubChanges', 'copyForRelease']);
+  //grunt.registerTask('releasePatch',   ['bump-only:patch', 'buildRelease', 'bump-commit', 'log:release']);
+  //grunt.registerTask('releaseMinor',   ['bump-only:minor', 'buildRelease', 'bump-commit', 'log:release']);
   // major release should probably be done with care
   //grunt.registerTask('releaseMajor',   ['bump-only:major', 'buildRelease', 'bump-commit:major', 'log:release']);
 

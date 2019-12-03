@@ -82,7 +82,7 @@
     });
   });
 
-  it("valid keys", function() {
+  describe("valid keys", function() {
     renderIt("Renders all valid keys", "{_foo}{$bar}{baz1}", {_foo: 1, $bar: 2, baz1: 3}, "123");
   });
 
