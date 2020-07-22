@@ -253,7 +253,7 @@ module.exports = function(grunt) {
   grunt.registerTask('coverage',       ['build', 'jasmine:coverage', 'log:coverage']);
 
   //no need for release tasks - we're not going to re-release
-  //grunt.registerTask('copyForRelease', ['clean:dist', 'copy', 'log:copyForRelease']);
+  grunt.registerTask('copyForRelease', ['clean:dist', 'copy', 'log:copyForRelease']);
   //grunt.registerTask('buildRelease',   ['test', 'githubChanges', 'copyForRelease']);
   //grunt.registerTask('releasePatch',   ['bump-only:patch', 'buildRelease', 'bump-commit', 'log:release']);
   //grunt.registerTask('releaseMinor',   ['bump-only:minor', 'buildRelease', 'bump-commit', 'log:release']);
