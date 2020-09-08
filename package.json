@@ -1,6 +1,6 @@
 {
   "name": "dustjs-linkedin",
-  "version": "2.7.2",
+  "version": "2.7.3",
   "author": {
     "name": "Aleksander Williams",
     "url": "http://akdubya.github.com/dustjs"
@@ -54,7 +54,6 @@
     "grunt-contrib-jasmine": "^2.2.0",
     "grunt-contrib-jshint": "~1.0.0",
     "grunt-contrib-uglify": "~1.0.1",
-    "grunt-contrib-watch": "^1.1.0",
     "grunt-execute": "~0.2.2",
     "grunt-jasmine-nodejs": "~1.5.3",
     "grunt-peg": "~2.0.0",
